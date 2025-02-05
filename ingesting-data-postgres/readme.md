@@ -1,4 +1,4 @@
-### Run the postgres container in the terminal (use full path for volume mount instead of $(pwd))
+1. Run the postgres container in the terminal (use full path for volume mount instead of $(pwd))
 
 ```console
 docker run -it \
@@ -9,13 +9,14 @@ docker run -it \
   -p 5432:5432 \
   postgres:latest
 ```
-### When the database is ready to accept connections, use the pgcli library to connect to the database
+2. When the database is ready to accept connections, use the pgcli library to connect to the database
 
 ```console
 pip install pgcli
 pgcli -h localhost -p 5432 -u root -d hotel_bookings
 ```
-### Once connect, the terminal will look like below
+
+3. Once connect, the terminal will look like below
 
 ```console
 Server: PostgreSQL 16.1 (Debian 16.1-1.pgdg120+1)
