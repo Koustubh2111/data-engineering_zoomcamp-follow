@@ -9,7 +9,7 @@ docker run -it \
   -p 5432:5432 \
   postgres:latest
 ```
-2. When the database is ready to accept connections, use the pgcli library to connect to the database
+2. When the database is ready to accept connections, use the pgcli library to connect to the database [^1]
 
 ```console
 pip install pgcli
