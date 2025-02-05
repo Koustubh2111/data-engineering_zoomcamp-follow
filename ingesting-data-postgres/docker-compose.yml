@@ -23,7 +23,7 @@ services: #Defining all the containiners  - in this case only postgres
 #  -e POSTGRES_USER="root" \
 #  -e POSTGRES_PASSWORD="root" \
 #  -e POSTGRES_DB='hotel_bookings' \
-#  -v $(pwd)/hotel-bookings-data/hotel_bookings.csv:var/lib/postgres/data \   (requires full path)
+#  -v $(pwd)/hotel-bookings-data/hotel_bookings:var/lib/postgres/data \   #use full path
 #  -p 5432:5432 \
 #  postgres:latest
 
