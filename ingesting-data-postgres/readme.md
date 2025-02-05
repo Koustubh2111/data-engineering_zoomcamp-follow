@@ -12,7 +12,7 @@ docker run -it \
   postgres:latest
 ```
 
-2. When the database is ready to accept connections, use the pgcli library to connect to the database [^1]
+2. When the database is ready to accept connections, use the pgcli library to connect to the database
 
 ```console
 pip install pgcli
@@ -43,6 +43,10 @@ docker run -it \
 
 ```
 
+6. Both postgresql and pgadmin can be run togther in an easier way using [docker compose](./docker-compose.yml). By default, both services belong to the same network. Docker compose can be started and stopped using
 
-
-[^1]: Docker-compose file is unrelated to the data ingestion test. It will be used further along in the course. 
+```console
+docker compose up
+docker compose down
+```
+ 
