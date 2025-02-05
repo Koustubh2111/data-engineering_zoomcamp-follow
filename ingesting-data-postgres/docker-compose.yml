@@ -1,0 +1,29 @@
+#Version of the docker compose file
+version: '3.8'
+
+services: #Defining all the containiners  - in this case only postgres
+  postgres:    #Name of the service - identifier - can be named anything 
+    image: postgres:latest    #name of the docker image, latest version eg. python:3.12
+    environment: #Default env variables
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    ports:
+      - "5432:5432" #port to port mapping
+    volumes: #/var/lib is a linux dir system for variable long term data storage - volumes is used for persistent data storage independent of active containers
+      - postgres_data:/var/lib/postgresql/data   #Mounts the data in the postgres_data dir to var/lib/../data
+    healthcheck:
+      test: ["CMD", "pg_is_ready", "-U", "airflow"]
+      interval: 5s
+      retries: 5
+    restart: always
+
+#To run the postgres container - not related to docker compose file; docker run does not run from a docker-compose file
+#docker run -it \
+#  -e POSTGRES_USER="root" \
+#  -e POSTGRES_PASSWORD="root" \
+#  -e POSTGRES_DB='hotel_bookings' \
+#  -v $(pwd)/hotel-bookings-data/hotel_bookings.csv:var/lib/postgres/data \   (requires full path)
+#  -p 5432:5432 \
+#  postgres:latest
+
