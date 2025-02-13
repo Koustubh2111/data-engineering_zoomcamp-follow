@@ -7,8 +7,7 @@ from prefect import flow, task
 @task(log_prints = True)
 def extract_data(csv_file, chunksize = 1000):
 
-    return pd.read_csv(csv_file, iterator=True, \
-                      chunksize=chunksize)
+    return pd.read_csv(csv_file)
 
 
 @task(log_prints = True)
@@ -32,7 +31,7 @@ def transform_data(df):
 
 
 @task(log_prints=True, retries=3)
-def load_data(user,password,host, port, db, table_name, df_iter):
+def load_data(user,password,host, port, db, table_name, df):
 
     '''
     task decorator used for metadata and upstream dependencies 
@@ -43,34 +42,11 @@ def load_data(user,password,host, port, db, table_name, df_iter):
     postgres_url = f'postgresql://{user}:{password}@{host}:{port}/{db}'
     engine = create_engine(postgres_url)
 
-    #Add the header to the database
-    df = next(df_iter)
     #Add to table with 'name' - take care to not use dashes in the name.
     df.head(0).to_sql(name=table_name, con=engine, if_exists='replace')
 
-
-    #Ingest each of the chunks into the sql table using append
-    chunk = 0
-    while True:
-
-        try:
-            chunk += 1
-
-            start_time = time()
-
-            df = next(df_iter)
-
-            df.to_sql(name=table_name, con=engine, if_exists='append')
-
-            end_time = time()
-
-            print(f'Chunk {chunk} inserted - time : %.3f' % (end_time-start_time))
-
-        except:
-            print('End of file reached')
-            break
-            
-    
+    #Add the data
+    df.to_sql(name=table_name, con=engine, if_exists='append')
 
 @flow(name='Ingest_flow')
 def main_flow():
@@ -81,10 +57,9 @@ def main_flow():
     db = 'hotel_bookings'
     table_name = 'hotel_bookings_data'
     csv_file = '../ingesting-data-postgres/hotel-bookings-data/hotel_bookings.csv'
-    chunksize = 10000
 
     
-    raw_data = extract_data(csv_file=csv_file, chunksize=chunksize)
+    raw_data = extract_data(csv_file=csv_file)
     transformed_data = transform_data(raw_data)
     load_data(user,password,host, port, db, table_name, transformed_data)
 
