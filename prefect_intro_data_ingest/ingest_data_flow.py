@@ -2,6 +2,7 @@ import pandas as pd
 from sqlalchemy import create_engine
 from time import time
 from prefect import flow, task
+from prefect_sqlalchemy import SqlAlchemyConnector
 
 
 @task(log_prints = True)
@@ -31,22 +32,19 @@ def transform_data(df):
 
 
 @task(log_prints=True, retries=3)
-def load_data(user,password,host, port, db, table_name, df):
+def load_data(table_name, df):
 
     '''
-    task decorator used for metadata and upstream dependencies 
+    Using the SQL alchemy connector block
     '''
+    connection_block = SqlAlchemyConnector.load('postgres-db-connector')
+    with connection_block.get_connection(begin=False) as engine:
 
-    #Create the SQL engine
-    #Use postgresql in the URL and not postgres
-    postgres_url = f'postgresql://{user}:{password}@{host}:{port}/{db}'
-    engine = create_engine(postgres_url)
+        #Add to table with 'name' - take care to not use dashes in the name.
+        df.head(0).to_sql(name=table_name, con=engine, if_exists='replace')
 
-    #Add to table with 'name' - take care to not use dashes in the name.
-    df.head(0).to_sql(name=table_name, con=engine, if_exists='replace')
-
-    #Add the data
-    df.to_sql(name=table_name, con=engine, if_exists='append')
+        #Add the data
+        df.to_sql(name=table_name, con=engine, if_exists='append')
 
 @flow(name='Ingest_flow')
 def main_flow():
@@ -61,7 +59,7 @@ def main_flow():
     
     raw_data = extract_data(csv_file=csv_file)
     transformed_data = transform_data(raw_data)
-    load_data(user,password,host, port, db, table_name, transformed_data)
+    load_data(table_name, transformed_data)
 
 
 if __name__ == '__main__':
