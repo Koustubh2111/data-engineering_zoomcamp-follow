@@ -1,10 +1,7 @@
-#%%
 import pandas as pd
 from sqlalchemy import create_engine
 from time import time
 from prefect import flow, task
-
-#%%
 
 
 @task(log_prints = True)
@@ -32,6 +29,7 @@ def transform_data(df):
     #remove fields with days_in_waiitng_list < 50 and previous_bookings_not_cancelled > 50
     #Arbitrary transformation
     return df[(df['days_in_waiting_list'] < 50) & (df['previous_bookings_not_canceled'] > 50)].reset_index()
+
 
 @task(log_prints=True, retries=3)
 def load_data(user,password,host, port, db, table_name, df_iter):
