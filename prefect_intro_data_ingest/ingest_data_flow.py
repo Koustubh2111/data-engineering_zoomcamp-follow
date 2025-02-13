@@ -48,11 +48,7 @@ def load_data(table_name, df):
 
 @flow(name='Ingest_flow')
 def main_flow():
-    user = 'root'
-    password = 'root'
-    host = 'localhost'
-    port = '5432'
-    db = 'hotel_bookings'
+ 
     table_name = 'hotel_bookings_data'
     csv_file = '../ingesting-data-postgres/hotel-bookings-data/hotel_bookings.csv'
 
