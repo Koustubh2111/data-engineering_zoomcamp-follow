@@ -214,3 +214,6 @@ terraform.rc
 
 #all JSON files
 *.json
+
+#Docker pgdata
+/ingesting-data-postgres/hotel-bookings-data/db_data
