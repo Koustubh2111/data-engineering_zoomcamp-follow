@@ -3,8 +3,14 @@ import pandas as pd
 from prefect import task, flow
 from prefect_gcp.cloud_storage import GcsBucket
 from prefect_gcp import GcpCredentials
+from prefect.tasks import task_input_hash
+from datetime import timedelta
 
-@task(log_prints=True)
+@task(
+        log_prints=True,
+        cache_key_fn=task_input_hash,
+        cache_expiration=timedelta(days=1)
+    )
 def extract_from_gcs(color: str, year: int, month: int) -> Path:
     "Download green trip data from GCS - Note that in gcs.get_directory, from path is appended to local path"
     gcs_path = f'data/{color}/'
@@ -46,5 +52,4 @@ def etl_gcs_to_bq() -> None:
     df = read_file_locally(path)
     write_bq(df)
 
-if __name__ == "__main__":
-    etl_gcs_to_bq()
+

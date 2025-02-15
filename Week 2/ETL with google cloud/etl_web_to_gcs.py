@@ -54,5 +54,4 @@ def etl_gcs_to_web() -> None:
     path = write_local(df_clean, color, dataset_file)
     write_gcs(path)
 
-if __name__ == "__main__":
-    etl_gcs_to_web()
+
