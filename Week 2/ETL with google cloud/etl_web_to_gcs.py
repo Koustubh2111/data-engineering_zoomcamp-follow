@@ -40,7 +40,7 @@ def write_gcs(path: Path) -> None:
 
 
 @flow()
-def etl_gcs_to_web() -> None:
+def etl_web_to_gcs() -> None:
     """Main ETL flow"""
     color = "green"
     year = 2019
