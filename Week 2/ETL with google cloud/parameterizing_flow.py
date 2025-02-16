@@ -29,32 +29,35 @@ def dump_to_gcs(
 def etl_gcs_to_bq_subflow(
         color: str,
         year: int,
-        month: int
+        month: int,
+        table: str
 )-> None:
     "Subflow 2- Move data from GCS Bucket to BigQuery"
 
     path = extract_from_gcs(color, year, month)
     df = read_file_locally(path)
-    write_bq(df)
+    write_bq(df, table)
 
 @flow()
 def etl_parent_flow(
     color: str,
     year: int,
-    months: list[int]
+    months: list[int],
+    tables: list[str]
 ) -> None:
     "Parent flow that runs the above subflow for three different months"
 
-    for month in months:
+    for month,table in zip(months, tables):
 
         #Get data from web and move to GCS bucket
         dump_to_gcs(color, year, month)
 
         #Move from GCS bucket to local again and to BigQuery
-        etl_gcs_to_bq_subflow(color, year, month)
+        etl_gcs_to_bq_subflow(color, year, month, table)
 
 if __name__ == "__main__":
     color = 'green'
     year = 2021
     months = [3,4,5]
-    etl_parent_flow(color, year, months)
+    tables = [f'rides_{m}' for m in months]
+    etl_parent_flow(color, year, months, tables)

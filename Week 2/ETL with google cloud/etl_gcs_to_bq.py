@@ -26,17 +26,19 @@ def read_file_locally(path: Path) -> pd.DataFrame:
     return pd.read_parquet(path)
 
 @task()
-def write_bq(df: pd.DataFrame) -> None:
+def write_bq(
+    df: pd.DataFrame,
+    table_name: str) -> None:
     """Write dataframe to big query"""
 
     gcp_credentials_block = GcpCredentials.load("de-zoomcamp-week2")
     
     df.to_gbq(
-        destination_table= 'de-zoomcamp-follow-project.de_zoomcamp_w2.rides',
+        destination_table= f'de-zoomcamp-follow-project.de_zoomcamp_w2.{table_name}',
         project_id='de-zoomcamp-follow-project',
         credentials=gcp_credentials_block.get_credentials_from_service_account(),
         chunksize=500_000,
-        if_exists='append'
+        if_exists='replace'
     )
 
 
@@ -47,9 +49,10 @@ def etl_gcs_to_bq() -> None:
     color = 'green'
     year = 2019
     month = 1
+    table = 'rides'
 
     path = extract_from_gcs(color, year, month)
     df = read_file_locally(path)
-    write_bq(df)
+    write_bq(df, table)
 
 
