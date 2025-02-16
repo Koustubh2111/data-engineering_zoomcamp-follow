@@ -15,3 +15,9 @@ prefect worker start -p [worker-pool-name]
 prefect deploy -n [deployment name]
 prefect deployment run 'file.py:flow_entrypoint'
 ```
+
+4. Create a docker file from prefecthq/prefect:3.2.2, required libraries are installed from [docker-requirements](./docker-requirements.txt) , flow codes and data are copied. Execute the following commands
+```console
+docker image build -t [docker-hub-username]/prefectw2:zoomcamp .
+docker image push [docker-hub-username]/prefectw2:zoomcamp
+```
