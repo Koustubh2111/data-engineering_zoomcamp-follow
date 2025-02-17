@@ -10,7 +10,7 @@ docker_image = DockerImage(
 
 """
 deploy method builds and pushes the image to registry to use. 
-Push and build parameters can be set to False, but unable to use a docker image already from registry
+Push and build parameters can be set to False, but unable to use a docker image already from registry - authentication error!
 """
 
 if __name__ == "__main__":
