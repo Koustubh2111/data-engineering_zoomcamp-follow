@@ -5,7 +5,7 @@ COPY docker-requirements.txt .
 RUN pip install -r docker-requirements.txt --trusted-host pypi.python.org --no-cache-dir
 
 COPY data data/
-COPY etl_gcs_to_bq.py flows/etl_gcs_to_bq.py
-COPY etl_web_to_gcs.py flows/etl_web_to_gcs.py
-COPY parameterizing_flow.py flows/parameterizing_flow.py
+COPY etl_gcs_to_bq.py etl_gcs_to_bq.py
+COPY etl_web_to_gcs.py etl_web_to_gcs.py
+COPY parameterizing_flow.py parameterizing_flow.py
 
