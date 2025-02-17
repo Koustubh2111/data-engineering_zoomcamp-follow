@@ -21,3 +21,4 @@ prefect deployment run 'file.py:flow_entrypoint'
 docker image build -t [docker-hub-username]/prefectw2:zoomcamp .
 docker image push [docker-hub-username]/prefectw2:zoomcamp
 ```
+Alternatively, the docker image can be built and pushed from the [Docker file](./Dockerfile) using the DockerImage object from prefect.docker (version 3 is completely different from version 2). The deploy() method can be used for a flow with the name, image and parameters. A worker has to be started as in step 2 and the [docker deploy code](./docker-deploy.py) can be run. Deployment can be run immediately using prefect deployment run as step 3 or scheduled. 
