@@ -1,0 +1,13 @@
+
+version: 2
+
+sources:
+  - name: staging
+    database: de-zoomcamp-follow-project
+    schema: de_zoomcamp_w2
+
+    tables:
+      - name: rides_21_3
+      - name: rides_21_4
+
+
