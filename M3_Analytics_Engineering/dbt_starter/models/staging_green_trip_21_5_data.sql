@@ -4,12 +4,15 @@
     )
 }}
 
-with tripdata as 
-(
+with tripdata as (
   select *,
-    row_number() over(partition by vendorid, lpep_pickup_datetime) as rn
-  from {{ source('staging','green_tripdata') }}
-  where vendorid is not null 
+    row_number() over(
+        partition by 
+            CAST(vendorid AS STRING),  -- Cast to STRING or INTEGER, if needed
+            CAST(lpep_pickup_datetime AS TIMESTAMP)  -- Ensure it's a proper timestamp
+    ) as rn
+  from {{ source('staging', 'rides_21_5') }}
+  where vendorid is not null
 )
 select
     -- identifiers
@@ -39,27 +42,6 @@ select
 from tripdata
 where rn = 1
 
-
-
-
-    {{ dbt_utils.generate_surrogate_key(['vendorid', 'lpep_pickup_datetime']) }} as tripid,
-    vendorid,
-    lpep_pickup_datetime,
-    lpep_dropoff_datetime,
-    store_and_fwd_flag,
-    ratecodeid,
-    passenger_count,
-    trip_distance,
-    fare_amount,
-    total_amount,
-    payment_type,
-    trip_type,
-    improvement_surcharge,
-    pulocationid,
-    dolocationid
-
-from source
-)
 -- dbt build --select <model_name> --vars '{'is_test_run': 'false'}'
 -- add a limit 100 to the file if no variables are give or set to false
 {% if var('is_test_run', default=true) %}
