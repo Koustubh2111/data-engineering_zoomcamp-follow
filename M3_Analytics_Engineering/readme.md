@@ -2,7 +2,4 @@
 ```console
 dbt init
 ```
-2. A DBT folder structure is created
-```
-├── src/ │ ├── main.py │ ├── utils.py ├── data/ │ ├── raw/ │ ├── processed/ ├── docs/ │ ├── README.md ├── .gitignore ├── requirements.txt ├── setup.py
-```
+2. A DBT [folder structure](./dbt_starter/) is created with directories for macros, models, seeds and tests. 
